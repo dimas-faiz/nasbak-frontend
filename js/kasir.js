@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = 'https://nasbak-backend.vercel.app/api';
 let allOrders = [];
 let currentFilter = 'all';
 
@@ -23,7 +23,7 @@ async function fetchOrders() {
         }
     } catch (error) {
         console.error('Error fetching orders:', error);
-        tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Gagal terhubung ke API Laravel. Pastikan server lokal berjalan.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Gagal terhubung ke API Laravel.</td></tr>`;
     }
 }
 
