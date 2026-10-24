@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Panel Kasir - NasBak Kampus</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/kasir.css">
+    <style>
+        body {
+            background-color: var(--brand-forest-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .login-card {
+            background: #FFFFFF;
+            border-radius: var(--radius-xxl);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-dark"><i class="bi bi-fire text-success me-2"></i>NasBak Admin</h2>
+            <p class="text-muted fs-sm">Silakan masuk untuk mengakses panel kasir</p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="mb-3">
+                <label class="form-label font-semibold text-dark fs-xs">Email Kasir/Admin</label>
+                <input type="email" id="email" class="form-control" placeholder="contoh: admin@nasbak.me" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label font-semibold text-dark fs-xs">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" id="btnLogin" class="btn btn-success w-100 py-2.5 font-bold rounded-3">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Masuk Sistem
+            </button>
+        </form>
+    </div>
+
+    <script>
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('btnLogin');
+
+            btn.disabled = true;
+            btn.innerText = 'Memproses...';
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Simpan data user & role di localStorage
+                    localStorage.setItem('user_session', JSON.stringify(result.data));
+                    window.location.href = 'kasir.html';
+                } else {
+                    alert(result.message || 'Login gagal.');
+                    btn.disabled = false;
+                    btn.innerText = 'Masuk Sistem';
+                }
+            } catch (err) {
+                alert('Gagal terhubung ke server backend.');
+                btn.disabled = false;
+                btn.innerText = 'Masuk Sistem';
+            }
+        }
+    </script>
+</body>
+
+</html>

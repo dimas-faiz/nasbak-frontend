@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NasBak Kampus - Pesan Nasi Bakar Online</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Supabase JS SDK CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body
+    class="bg-[#F8F6F0] text-[#0F172A] font-['Plus_Jakarta_Sans',sans-serif] antialiased selection:bg-[#10B981] selection:text-white pb-12">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-[#F8F6F0]/90 backdrop-blur-md border-b border-[#E2E8F0] px-4 py-3 sm:px-8">
+        <div class="max-w-3xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-xl bg-[#10B981] text-white flex items-center justify-center font-bold text-xl shadow-md shadow-[#10B981]/20">
+                    N
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight text-[#0F172A]">NasBak Kampus</h1>
+                    <p class="text-xs text-[#64748B] font-medium">Aroma Otentik, Nikmat & Terjangkau</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-[#E2E8F0] shadow-sm">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs font-semibold text-[#0F172A]">Buka • Booth Kampus</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 pt-6 space-y-6">
+
+        <!-- Banner Info Loyalty -->
+        <section
+            class="bg-gradient-to-r from-[#0F172A] to-[#1E293B] text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
+            <div class="relative z-10 space-y-1">
+                <div
+                    class="inline-flex items-center gap-1.5 bg-[#EA580C] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                    <i class="fa-solid fa-gift"></i> Promo Loyalty Gacha
+                </div>
+                <h2 class="text-lg font-bold pt-1">Beli 3 Porsi, Langsung Dapat Gacha!</h2>
+                <p class="text-xs text-[#94A3B8] leading-relaxed">
+                    Setiap kelipatan 3 porsi pembelian, kamu berhak memutar Roda Gacha berhadiah <b>Diskon s/d Rp7.000</b> atau
+                    <b>Bonus Air Botol</b>.
+                </p>
+            </div>
+            <i class="fa-solid fa-fire-flame-curry absolute -bottom-4 -right-4 text-7xl text-white/5 pointer-events-none"></i>
+        </section>
+
+        <!-- Form Identitas Pelanggan -->
+        <section class="bg-white rounded-2xl p-5 border border-[#E2E8F0] shadow-sm space-y-4">
+            <h3 class="text-sm font-bold text-[#0F172A] uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-user-tag text-[#10B981]"></i> Data Pemesan & Stempel
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-[#475569] mb-1">Nama Lengkap</label>
+                    <input type="text" id="custName" placeholder="Contoh: Budi Santoso"
+                        class="w-full bg-[#F8F6F0] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm font-medium text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:bg-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-[#475569] mb-1">Nomor WhatsApp (Aktif)</label>
+                    <input type="tel" id="custPhone" placeholder="Contoh: 081234567890"
+                        class="w-full bg-[#F8F6F0] border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 text-sm font-medium text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 focus:bg-white transition-all">
+                </div>
+            </div>
+
+            <!-- Progress Stempel Digital -->
+            <div id="stampCard" class="bg-[#F8F6F0] rounded-xl p-3.5 border border-[#E2E8F0] hidden space-y-2">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="font-semibold text-[#475569]">Progres Stempel Digital kamu:</span>
+                    <span id="stampCountText" class="font-bold text-[#10B981]">0 / 3 Stempel</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                    <div id="stampProgressBar" class="bg-[#10B981] h-full transition-all duration-500 rounded-full"
+                        style="width: 0%"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pilihan Menu -->
+        <section class="space-y-3">
+            <h3 class="text-sm font-bold text-[#0F172A] uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-utensils text-[#10B981]"></i> Pilih Menu Nasi Bakar
+            </h3>
+
+            <!-- Card Menu 1: Nasi Bakar Biasa -->
+            <div
+                class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden flex flex-col sm:flex-row hover:border-[#10B981]/50 transition-all">
+                <div class="sm:w-2/5 h-40 sm:h-auto bg-gray-100 relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80"
+                        alt="Nasi Bakar Biasa" class="w-full h-full object-cover">
+                    <span
+                        class="absolute top-2 left-2 bg-[#0F172A]/80 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-md">
+                        Paling Laris
+                    </span>
+                </div>
+                <div class="p-4 sm:w-3/5 flex flex-col justify-between space-y-3">
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-base text-[#0F172A]">Nasi Bakar Biasa</h4>
+                            <span class="font-extrabold text-base text-[#10B981]">Rp 12.000</span>
+                        </div>
+                        <p class="text-xs text-[#64748B] mt-1 leading-relaxed">
+                            Nasi uduk gurih dibungkus daun pisang dengan isian ayam suwir bumbu kemangi, dibakar harum.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-2 border-t border-[#F1F5F9]">
+                        <span class="text-xs font-semibold text-[#475569]">Jumlah Porsi</span>
+                        <div class="flex items-center gap-3 bg-[#F8F6F0] rounded-xl px-3 py-1 border border-[#E2E8F0]">
+                            <button onclick="updateQty('biasa', -1)"
+                                class="text-[#0F172A] hover:text-[#10B981] font-bold text-base px-1">-</button>
+                            <span id="qtyBiasa" class="font-bold text-sm text-[#0F172A] w-4 text-center">0</span>
+                            <button onclick="updateQty('biasa', 1)"
+                                class="text-[#0F172A] hover:text-[#10B981] font-bold text-base px-1">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Menu 2: Nasi Bakar + Air Botol -->
+            <div
+                class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden flex flex-col sm:flex-row hover:border-[#10B981]/50 transition-all">
+                <div class="sm:w-2/5 h-40 sm:h-auto bg-gray-100 relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80"
+                        alt="Nasi Bakar Paket Air" class="w-full h-full object-cover">
+                    <span
+                        class="absolute top-2 left-2 bg-[#EA580C] text-white text-[10px] font-bold px-2 py-1 rounded-md">
+                        Paket Hemat
+                    </span>
+                </div>
+                <div class="p-4 sm:w-3/5 flex flex-col justify-between space-y-3">
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-base text-[#0F172A]">Paket Nasi Bakar + Air Botol</h4>
+                            <span class="font-extrabold text-base text-[#10B981]">Rp 14.000</span>
+                        </div>
+                        <p class="text-xs text-[#64748B] mt-1 leading-relaxed">
+                            1 Porsi Nasi Bakar Isian Suwir Ayam + 1 Botol Air Mineral Dingin (Lebih Hemat Rp1.000).
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-2 border-t border-[#F1F5F9]">
+                        <span class="text-xs font-semibold text-[#475569]">Jumlah Porsi</span>
+                        <div class="flex items-center gap-3 bg-[#F8F6F0] rounded-xl px-3 py-1 border border-[#E2E8F0]">
+                            <button onclick="updateQty('paket', -1)"
+                                class="text-[#0F172A] hover:text-[#10B981] font-bold text-base px-1">-</button>
+                            <span id="qtyPaket" class="font-bold text-sm text-[#0F172A] w-4 text-center">0</span>
+                            <button onclick="updateQty('paket', 1)"
+                                class="text-[#0F172A] hover:text-[#10B981] font-bold text-base px-1">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Area Fitur Gacha -->
+        <section id="gachaSection"
+            class="bg-gradient-to-b from-white to-[#F8F6F0] rounded-2xl p-5 border-2 border-[#10B981] shadow-md text-center space-y-4 hidden">
+            <div class="inline-block bg-[#10B981]/10 text-[#10B981] text-xs font-bold px-3 py-1 rounded-full uppercase">
+                🎉 Hak Akses Gacha Aktif!
+            </div>
+            <h3 class="text-base font-bold text-[#0F172A]">Putar Roda Gacha Untuk Klaim Hadiah!</h3>
+            <p class="text-xs text-[#64748B] max-w-md mx-auto">
+                Kamu mendapatkan kesempatan gacha dari pembelian ini. Tekan tombol di bawah untuk memutar!
+            </p>
+
+            <!-- Wheel Canvas -->
+            <div class="relative w-56 h-56 mx-auto my-2">
+                <canvas id="wheelCanvas" width="224" height="224"
+                    class="w-full h-full rounded-full shadow-inner"></canvas>
+                <div
+                    class="absolute -top-2 left-1/2 -translate-x-1/2 z-10 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[18px] border-t-[#EA580C]">
+                </div>
+            </div>
+
+            <button id="spinBtn" onclick="spinGacha()"
+                class="w-full sm:w-auto px-8 py-3 bg-[#10B981] hover:bg-[#059669] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#10B981]/25 transition-all transform active:scale-95">
+                <i class="fa-solid fa-rotate-right mr-1.5"></i> Putar Gacha Sekarang
+            </button>
+
+            <!-- Reward Display Box -->
+            <div id="rewardBox"
+                class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-center space-y-1">
+                <p class="text-xs text-emerald-700 font-semibold">Selamat! Kamu Mendapatkan:</p>
+                <p id="rewardTitle" class="text-base font-extrabold text-emerald-900">-</p>
+                <p class="text-[11px] text-emerald-600">Kode Voucher: <span id="voucherCode"
+                        class="font-mono font-bold uppercase underline">-</span></p>
+            </div>
+        </section>
+
+        <!-- Ringkasan & Pembayaran -->
+        <section class="bg-white rounded-2xl p-5 border border-[#E2E8F0] shadow-sm space-y-4">
+            <h3 class="text-sm font-bold text-[#0F172A] uppercase tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-receipt text-[#10B981]"></i> Ringkasan Pembayaran
+            </h3>
+
+            <div class="space-y-2 text-xs border-b border-[#F1F5F9] pb-3">
+                <div class="flex justify-between text-[#64748B]">
+                    <span>Total Porsi</span>
+                    <span id="summaryQty" class="font-semibold text-[#0F172A]">0 Porsi</span>
+                </div>
+                <div class="flex justify-between text-[#64748B]">
+                    <span>Subtotal Harga</span>
+                    <span id="summarySubtotal" class="font-semibold text-[#0F172A]">Rp 0</span>
+                </div>
+                <div id="discountRow" class="flex justify-between text-emerald-600 hidden">
+                    <span>Diskon Voucher Gacha</span>
+                    <span id="summaryDiscount" class="font-bold">- Rp 0</span>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-1">
+                <span class="text-xs font-bold text-[#0F172A] uppercase">Total Tagihan</span>
+                <span id="summaryTotal" class="text-xl font-extrabold text-[#10B981]">Rp 0</span>
+            </div>
+
+            <!-- Metode Pembayaran -->
+            <div class="space-y-1.5 pt-2">
+                <label class="block text-xs font-semibold text-[#475569]">Metode Pembayaran</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <label
+                        class="flex items-center gap-2 p-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8F6F0] cursor-pointer hover:bg-white transition-all text-xs font-semibold">
+                        <input type="radio" name="payment" value="Tunai" checked class="accent-[#10B981]">
+                        <span><i class="fa-solid fa-money-bill-wave text-emerald-600 mr-1"></i> Tunai (Kasir)</span>
+                    </label>
+                    <label
+                        class="flex items-center gap-2 p-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8F6F0] cursor-pointer hover:bg-white transition-all text-xs font-semibold">
+                        <input type="radio" name="payment" value="QRIS" class="accent-[#10B981]">
+                        <span><i class="fa-solid fa-qrcode text-blue-600 mr-1"></i> QRIS</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Tombol Submit -->
+            <button onclick="submitOrder()"
+                class="w-full py-3.5 bg-[#0F172A] hover:bg-[#1E293B] text-white font-bold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 transform active:scale-98">
+                <i class="fa-solid fa-paper-plane text-[#10B981]"></i> Kirim Pesanan Sekarang
+            </button>
+        </section>
+
+    </main>
+
+    <!-- External JS -->
+    <script src="js/app.js"></script>
+</body>
+
+</html>

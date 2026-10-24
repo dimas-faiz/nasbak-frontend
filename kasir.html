@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Kasir - NasBak Kampus</title>
+
+    <!-- Font Icons & Bootstrap CSS via CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- CSS Khusus Kasir -->
+    <link rel="stylesheet" href="css/kasir.css">
+</head>
+
+<body>
+
+    <!-- Sidebar Component -->
+    <div class="sidebar-wrapper" id="sidebar">
+        <a href="kasir.html" class="sidebar-brand">
+            <i class="bi bi-fire text-lime"></i>
+            <span>NasBak Kasir</span>
+        </a>
+
+        <div class="flex-grow-1 overflow-y-auto">
+            <div class="sidebar-menu-section">
+                <div class="sidebar-menu-title">Menu Utama</div>
+                <ul class="sidebar-menu-list">
+                    <li class="sidebar-menu-item">
+                        <a href="kasir.html" class="sidebar-menu-link active">
+                            <i class="bi bi-grid-fill"></i>
+                            <span>Dashboard Kasir</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Profile Card -->
+        <div class="sidebar-profile">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" alt="Kasir"
+                class="sidebar-profile-img">
+            <div class="sidebar-profile-info">
+                <div class="sidebar-profile-name" id="sessionName">Kasir</div>
+                <div class="sidebar-profile-email" id="sessionRole">Role</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+
+        <!-- Top Navbar Component -->
+        <header class="navbar-custom">
+            <div class="navbar-left">
+                <button class="btn-desktop-toggle d-none d-xl-flex" id="desktop-sidebar-toggle"
+                    title="Minimize Sidebar">
+                    <i class="bi bi-chevron-bar-left"></i>
+                </button>
+                <button class="sidebar-toggle-btn d-xl-none me-2" id="sidebar-toggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <button onclick="fetchOrders()" class="btn-quick-action">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    <span>Refresh Data</span>
+                </button>
+            </div>
+
+            <div class="navbar-search-wrapper">
+                <input type="text" id="searchInput" class="navbar-search-input"
+                    placeholder="Cari nama pelanggan atau no WA..." onkeyup="filterOrders()">
+                <button class="navbar-search-btn">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+
+            <div class="navbar-actions">
+                <button onclick="handleLogout()" class="btn btn-sm btn-outline-danger me-2">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Header Banner -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">🔥 Dashboard Kasir NasBak</h1>
+                <p class="page-subtitle">Kelola pesanan masuk, verifikasi pembayaran, dan pantau omzet secara real-time.
+                </p>
+            </div>
+        </div>
+
+        <!-- Top Cards Summary -->
+        <div class="row g-4 mb-4">
+            <!-- Total Omzet Card -->
+            <div class="col-md-4">
+                <div class="card alert-green-card">
+                    <div class="position-relative z-index-2">
+                        <span class="alert-green-badge">Pendapatan</span>
+                        <div class="alert-green-date">Total Omzet Masuk</div>
+                        <div class="stat-value text-white mt-1" id="statTotalOmzet">Rp 0</div>
+                    </div>
+                    <svg class="alert-green-bg-shape" viewBox="0 0 100 100" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g transform="translate(50,50)">
+                            <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" />
+                            <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105"
+                                transform="rotate(60)" />
+                            <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105"
+                                transform="rotate(120)" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Total Pesanan Card -->
+            <div class="col-md-4">
+                <div class="card card-stat d-flex flex-column justify-content-between">
+                    <div>
+                        <span class="stat-label">Total Pesanan</span>
+                        <div class="stat-value" id="statTotalOrders">0</div>
+                        <div class="trend-badge trend-up">
+                            <i class="bi bi-box-seam me-1"></i>
+                            <span>Pesanan Tercatat</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pesanan Pending Card -->
+            <div class="col-md-4">
+                <div class="card card-stat d-flex flex-column justify-content-between">
+                    <div>
+                        <span class="stat-label">Menunggu Pembayaran</span>
+                        <div class="stat-value text-warning" id="statPendingOrders">0</div>
+                        <div class="trend-badge text-warning">
+                            <i class="bi bi-hourglass-split me-1"></i>
+                            <span>Status Pending</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Card Container -->
+        <div class="table-card-custom">
+            <div class="table-header-control">
+                <h2 class="card-title">Daftar Transaksi Pesanan</h2>
+                <div class="table-filter-group">
+                    <div class="dropdown">
+                        <button class="btn-table-action dropdown-toggle" type="button" id="dropdownFilterStatus"
+                            data-bs-toggle="dropdown">
+                            <i class="bi bi-funnel"></i> Filter Status
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" onclick="setFilter('all')">Semua Status</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setFilter('pending')">Pending</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setFilter('paid')">Lunas</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setFilter('completed')">Selesai</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Pelanggan</th>
+                            <th>Menu & Qty</th>
+                            <th>Total Harga</th>
+                            <th>Reward Gacha</th>
+                            <th>Status</th>
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody">
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted-green">Memuat data pesanan...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer Component -->
+        <footer class="footer-custom">
+            <div class="footer-left">
+                <span class="footer-logo">
+                    <i class="bi bi-fire text-lime me-1"></i> NasBak Kampus
+                </span>
+                <span class="footer-separator">|</span>
+                <span class="footer-copy">&copy; 2026 Panel Kasir System</span>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Script Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/kasir.js"></script>
+</body>
+
+</html>
